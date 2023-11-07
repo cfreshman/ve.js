@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ve.js</title>
+  <script src=/copyright.js></script> <meta data-hydrate data-style />
+  <style>
+    audio {
+      filter: invert(1);
+      min-height: 4em;
+    }
+    iframe {
+      width: 100%;
+      min-height: 20em;
+    }
+    img {
+      max-width: 60%;
+      flex-shrink: 1;
+      object-fit: contain;
+      object-position: left;
+    }
+  </style>
+
+  <script src="/lib/2/ve/ve.js"></script>
+</head>
+<body>
+
+  <div data-hydrate data-title></div>
+  <a href="ve.js">ve.js</a>
+  <div id=root></div>
+  <script>
+    const log = named_log('ve demo')
+    const examples = {
+      [`window['ve.js'].version`]: 0,
+      [`/* NEw vector */\na = V.ne(1, 2)`]: 0,
+      [`/* ADdition */\nb = V.ne(2, 0), c = V.ne(0, 2), d = V.ad(a, b, c)`]: 0,
+      [`/* MAgnitude */\nV.ma(d)`]: 0,
+      [`/* MAgnitude on instance */\nd.ma()`]: 0,
+      [`/* DOt product (magnitude ^ 2) */\nd.do()`]: 0,
+      [`/* DOt product */\nV.do(b, c)`]: 0,
+      [`/* RAnge */\nV.ra(5)`]: 0,
+      [`/* one-HOt vector */\nV.ho(5, 4)`]: 0,
+      [`/* ASsign */\nV.as(V.ne(0, 0, 0, 0), 1)`]: 0,
+      [`/* ASsign multiple */\nV.as(V.ne(0, 0, 0, 0), ...a)`]: 0,
+      [`/* REsize */\nV.re(a, 4)`]: 0,
+      [`/* SIgn */\nV.si(V.ne(-2, 0, 3))`]: 0,
+      [`/* PAttern */\nV.pa(a, 3)`]: 0,
+      [`/* NEw matrix */\nM.ne([[1, 2], [3, 4]]).st()`]: 0,
+      [`/* column vector */ M.ne([1, 2]).st()`]: 0,
+      [`/* row vector */ M.ne([[1, 2]]).st()`]: 0,
+      [`/* arbitrary data */ M.ne([['hello'], ['world']]).st()`]: 0,
+      [`/* MUltiply matrices */\nM.mu([1, 2], [[1, 2]]).st()`]: 0,
+      [`M.mu([[1, 2]], [1, 2]).st()`]: 0,
+    }
+
+    const results = []
+    const example_keys = Object.keys(examples)
+    const context = []
+    for (let i  = 0; i < example_keys.length; i++) {
+      const k = example_keys[i]
+      const v = examples[k]
+      let result = undefined
+      const v_k = v || k
+      const cmd = `(() => {
+${context.join('\n')}
+result = (${v_k})
+})()`
+      eval(cmd)
+      results.push(result)
+      context.push(v_k)
+    }
+    
+    root.append(node(`<pre>${
+      entries(examples)
+      .map(([k,v], i) => `<div
+      id=${i} style="
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      max-width: 100%;
+      ">
+        <a href=#${i}>#${i}</a>| <div>${k&&v ? `${k}: ` : ''}${v||k} => \n${
+          (x => typeof(x) === 'string' ? x : JSON.stringify(x, null, 2))(results[i])
+        }</div>
+      </div>`)
+      .join('')}</pre>`))
+  </script>
+
+</body>
+</html>
